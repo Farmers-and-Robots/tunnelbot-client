@@ -1,0 +1,807 @@
+openapi: 3.0.3
+info:
+  title: Tunnelbot - OpenAPI 3.0
+  description: |-
+    This is the API specification for the tunnelbot backend.
+  contact:
+    email: info@farmersandrobots.com
+  license:
+    name: GNU General Public License
+    url: https://www.gnu.org/licenses/
+  version: "1"
+externalDocs:
+  description: See the Tunnelbot project - 
+  url: https://github.com/orgs/Farmers-and-Robots/projects/4
+servers:
+  - url: https://tunnelbot.swagger.io/api/v1
+security:
+  - firebase: [ ]
+tags:
+  - name: farm
+    description: Operations for creating the farm scope in tunnelbot.
+  - name: tunnel
+    description: Operations for tunnels in tunnelbot.
+  - name: people
+    description: Manage admins and workers for a tunnel farm.
+  - name: device
+    description: Control devices in tunnels with a connector.
+    externalDocs:
+      description: Find out more
+      url: https://github.com/orgs/Farmers-and-Robots/projects/4
+paths:
+  /farm:
+    put:
+      tags:
+        - farm
+      summary: Update an existing farm
+      description: Update an existing farm by ID
+      operationId: updateFarm
+      requestBody:
+        description: Update an existent farm
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Farm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Farm'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Farm'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Farm not found
+        '405':
+          description: Validation exception
+    post:
+      tags:
+        - farm
+      summary: Add a new farm to the db
+      description: Add a new farm to the db
+      operationId: addFarm
+      requestBody:
+        description: Create a new farm in the db
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Farm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Farm'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Farm'
+        '405':
+          description: Invalid input
+  /farm/findByName:
+    get:
+      tags:
+        - farm
+      summary: Finds a farm by name
+      description: Looks up the farm by name
+      operationId: findFarmByName
+      parameters:
+        - name: name
+          in: query
+          description: String for farm name
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Farm'
+        '400':
+          description: Invalid status value
+  /farm/{farmId}:
+    get:
+      tags:
+        - farm
+      summary: Find farm by id
+      description: Returns a single farm
+      operationId: getFarmById
+      parameters:
+        - name: farmId
+          in: path
+          description: id of farm to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Farm'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Farm'
+        '400':
+          description: Invalid id supplied
+        '404':
+          description: Farm not found
+    delete:
+      tags:
+        - farm
+      summary: Deletes a farm
+      description: delete a farm
+      operationId: deleteFarm
+      parameters:
+        - name: api_key
+          in: header
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: farmId
+          in: path
+          description: Farm id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid farm value
+  /farm/addFarmAccess/{farmId}:
+    put:
+      tags:
+        - farm
+      summary: Add farm access for an existing person
+      description: Add farm access for an existing person
+      operationId: addPerson
+      parameters:
+        - name: farmId
+          in: path
+          description: id of farm to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Add farm access for an existent person
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Farm'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Farm'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Farm not found
+        '405':
+          description: Validation exception
+  /farm/removeFarmAccess/{farmId}:
+    put:
+      tags:
+        - farm
+      summary: Remove farm access for an existing person
+      description: Remove farm access for an existing person
+      operationId: removePerson
+      parameters:
+        - name: farmId
+          in: path
+          description: id of farm to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: remove farm access for an existent person
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Farm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Farm'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Farm'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Farm not found
+        '405':
+          description: Validation exception
+  /tunnels:
+    put:
+      tags:
+        - tunnel
+      summary: Update an existing tunnel
+      description: Update an existing tunnel by ID
+      operationId: updateTunnel
+      requestBody:
+        description: Update an existent tunnel
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tunnel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Tunnel'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tunnel'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Tunnel not found
+        '405':
+          description: Validation exception
+    post:
+      tags:
+        - tunnel
+      summary: Add a new tunnel to the db
+      description: Add a new tunnel to the db
+      operationId: addTunnel
+      requestBody:
+        description: Create a new tunnel in the db
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tunnel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Tunnel'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tunnel'
+        '405':
+          description: Invalid input
+    get:
+      tags:
+        - tunnel
+      summary: Return the tunnels on a farm
+      description: Return the tunnels on a farm
+      operationId: getTunnels
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Tunnel"
+        '405':
+          description: Invalid input
+  /tunnels/{tunnelId}:
+    get:
+      tags:
+        - tunnel
+      summary: Find tunnel by id
+      description: Returns a single tunnel
+      operationId: getTunnelById
+      parameters:
+        - name: tunnelId
+          in: path
+          description: id of tunnel to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tunnel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Tunnel'
+        '400':
+          description: Invalid id supplied
+        '404':
+          description: Tunnel not found
+    delete:
+      tags:
+        - tunnel
+      summary: Deletes a tunnel
+      description: delete a tunnel
+      operationId: deleteTunnel
+      parameters:
+        - name: api_key
+          in: header
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: tunnelId
+          in: path
+          description: Tunnel id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid tunnel value
+  /devices:
+    put:
+      tags:
+        - device
+      summary: Update an existing device
+      description: Update an existing device by ID
+      operationId: updateDevice
+      requestBody:
+        description: Update an existent device
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Device'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Device'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Device not found
+        '405':
+          description: Validation exception
+    post:
+      tags:
+        - device
+      summary: Add a new device to the db
+      description: Add a new device to the db
+      operationId: addDevice
+      requestBody:
+        description: Create a new device in the db
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Device'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Device'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '405':
+          description: Invalid input
+    get:
+      tags:
+        - device
+      summary: Return the devices on a farm
+      description: Return the devices on a farm
+      operationId: getDevices
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Device"
+        '405':
+          description: Invalid input
+  /devices/{deviceId}:
+    get:
+      tags:
+        - device
+      summary: Find device by id
+      description: Returns a single device
+      operationId: getDeviceById
+      parameters:
+        - name: deviceId
+          in: path
+          description: id of device to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '400':
+          description: Invalid id supplied
+        '404':
+          description: Device not found
+    delete:
+      tags:
+        - device
+      summary: Deletes a device
+      description: delete a device
+      operationId: deleteDevice
+      parameters:
+        - name: api_key
+          in: header
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: deviceId
+          in: path
+          description: Device id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid device value
+  /people:
+    get:
+      tags:
+        - people
+      summary: Return the people associated with a farm
+      description: Return the people associated with a farm
+      operationId: getPeople
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Person"
+  /people/{personId}:
+    get:
+      tags:
+        - people
+      summary: Find person by id
+      description: Returns a single person
+      operationId: getPersonById
+      parameters:
+        - name: personId
+          in: path
+          description: id of person to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '400':
+          description: Invalid id supplied
+        '404':
+          description: Person not found
+  /events:
+    get:
+      tags:
+        - events
+      summary: Return the events associated with a farm
+      description: Return the events associated with a farm
+      operationId: getEvents
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+  /events/{eventId}:
+    get:
+      tags:
+        - events
+      summary: Find event by id
+      description: Returns a single event
+      operationId: getEventById
+      parameters:
+        - name: eventId
+          in: path
+          description: id of event to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '400':
+          description: Invalid id supplied
+        '404':
+          description: Event not found
+components:
+  securitySchemes:
+    firebase:
+      type: "oauth2"
+      flows:
+        implicit:
+          authorizationUrl: ""
+          scopes:
+            read: Grants read access
+            write: Grants write access
+            admin: Grants access to admin operations
+      x-google-issuer: "https://securetoken.google.com/tunnelbot"
+      x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com"
+      x-google-audiences: "tunnelbot"
+  schemas:
+    Farm:
+      x-swagger-router-model: tunnelbot.model.Farm
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        kind:
+          type: string
+          example: frm
+        name:
+          type: string
+          example: FaR by the River
+        createDate:
+            type: string
+            example:  "2020-01-0100:00:00"
+        address:
+          $ref: "#/components/schemas/Address"
+        owners:
+          type: array
+          items:
+            $ref: "#/components/schemas/PersonAssociation"
+        people:
+          type: array
+          items:
+            $ref: "#/components/schemas/PersonAssociation"
+      type: object
+    Tunnel:
+      x-swagger-router-model: tunnelbot.model.Tunnel
+      required:
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        kind:
+          type: string
+          example: tun
+        name:
+          type: string
+          example: tunnel01
+        deviceIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          example: [1,2,3]
+      type: object
+    Tunnels:
+      x-swagger-router-model: tunnelbot.model.Tunnels
+      type: array
+      items:
+        $ref: "#/components/schemas/Tunnel"
+    Device:
+      x-swagger-router-model: tunnelbot.model.Device
+      required:
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        kind:
+          type: string
+          example: dvc
+        name:
+          type: string
+          example: tunnel01
+        category:
+          $ref: '#/components/schemas/DeviceCategory'
+        tunnelId:
+            type: integer
+            format: int64
+            example: 10
+      type: object
+    Devices:
+      x-swagger-router-model: tunnelbot.model.Devices
+      type: array
+      items:
+        $ref: "#/components/schemas/Device"
+    Person:
+      x-swagger-router-model: tunnelbot.model.Person
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        kind:
+          type: string
+          example: ppl
+        displayName:
+          type: string
+          example: munjeli
+        firstName:
+          type: string
+          example: Ele
+        lastName:
+          type: string
+          example: Munjeli
+        email:
+          type: string
+          example: info@farmersandrobots.com
+        phone:
+          type: string
+          example: 12345
+        farmAssociations:
+          type: array
+          items:
+            $ref: "#/components/schemas/FarmAssociation"
+    Event:
+      x-swagger-router-model: tunnelbot.model.Event
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        kind:
+          type: string
+          example: evt
+        description:
+          type: string
+          example: Right Curtain to 24 percent in tunnel-1 by munjeli
+        date:
+          type: string
+          example:  "2020-01-0100:00:00"
+        operator:
+          type: string
+          example: munjeli
+    Address:
+      properties:
+        street:
+          type: string
+          example: 549 Almond St
+        city:
+          type: string
+          example: Dubuque
+        state:
+          type: string
+          example: IA
+        zip:
+          type: string
+          example: 52001
+      type: object
+    DeviceCategory:
+      type: string
+      enum:
+        - curtain
+        - heating
+        - irrigation
+        - weather
+        - lighting
+        - fan
+        - other
+    FarmAssociation:
+      properties:
+        farmId:
+          type: integer
+          format: int64
+          example: 10
+        farmName:
+          type: string
+          example: Far by the River
+        role:
+          $ref: "#/components/schemas/Role"
+    PersonAssociation:
+      properties:
+        personId:
+          type: integer
+          format: int64
+          example: 10
+        displayName:
+          type: string
+          example: munjeli
+        email:
+          type: string
+          example: info@farmersandrobots.com
+        role:
+          $ref: "#/components/schemas/Role"
+    Role:
+        type: string
+        example: owner
+        enum:
+          - worker
+          - admin
+          - owner
+    ApiResponse:
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+      type: object
+  requestBodies:
+    Farm:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Farm'
+      description: Farm object that needs to be added to db
+    Tunnel:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Tunnel'
+    Device:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Device'
+      description: Tunnel object that needs to be added to db
+    Person:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Person'
+      description: Person object that needs to be added or removed from farm
